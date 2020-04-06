@@ -1,0 +1,85 @@
+﻿@model IEnumerable<UserInfo>
+@{
+    ViewBag.Title = "Show";
+}
+
+<h2>Show</h2>
+
+
+@using (Html.BeginForm())
+{
+    <table>
+        <tr>
+            <td>姓名：@Html.TextBox("name")</td>
+            <td>部门：@Html.DropDownList("did", ViewBag.bandsel as SelectList, "--请选择--")</td>
+            <td><input id="Submit1" type="submit" value="查询" class="btn btn-primary" /></td>
+            
+        </tr>
+    </table>
+}
+
+<input  type="button" value="添加" onclick="location.href='/User/Add'" class="btn btn-default" />
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th><input class="top" type="checkbox" onclick="allselect()" /></th>
+            <th>编号</th>
+            <th>姓名</th>
+            <th>登录名</th>
+            <th>部门</th>
+            <th>注册时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+            <tr>
+                <td><input class="ck1" type="checkbox" value="@i.Uid" /></td>
+                <td>@i.Uid</td>
+                <td>@i.Uname</td>
+                <td>@i.LoginName</td>
+                <td>@i.Dname</td>
+                <td>@i.RegistrationTime</td>
+                <td>
+                    @Html.ActionLink("删除", "Del", new { id = i.Uid }, new { @onclick = "return confirm('确认删除吗？')" }) &nbsp;
+                    @Html.ActionLink("修改", "Upt", new { id = i.Uid })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@using (Html.BeginForm("Del", "User", FormMethod.Get))
+{
+    <input id="Hidden1" type="hidden" value="-1" name="id" />
+    <input id="Submit1" type="submit" value="批量删除" onclick="DelAll()" class="btn btn-danger" />
+}
+
+<script>
+    function allselect() {
+        if ($(".top").prop("checked")) {
+            $(".ck1").prop("checked", true)
+        }
+        else {
+            $(".ck1").each(function () {
+                this.checked = !this.checked;
+            })
+        }
+    }
+
+    function DelAll() {
+        if (confirm("确认删除吗？")) {
+            var ids = [];
+            $(".ck1:checked").each(function () {
+                ids.push(this.value);
+            })
+            $("#Hidden1").val(ids.toString());
+        }
+        else {
+            return false;
+        }
+    }
+</script>
+
